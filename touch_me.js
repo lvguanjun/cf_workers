@@ -1,22 +1,34 @@
-addEventListener('fetch', event => {
-  event.respondWith(handleRequest(event.request))
-})
+addEventListener("fetch", (event) => {
+  event.respondWith(handleRequest(event.request));
+});
 
 const sites = [
-  { label: 'ChatGpt镜像共享站', host: 'shared.3211000.xyz', url: 'https://shared.3211000.xyz' },
-  { label: 'Chatgpt-Next-Web', host: 'chat.3211000.xyz', url: 'https://chat.3211000.xyz' },
+  {
+    label: "ChatGpt镜像共享站",
+    host: "shared.3211000.xyz",
+    url: "https://shared.3211000.xyz",
+  },
+  {
+    label: "Chatgpt-Next-Web",
+    host: "chat.3211000.xyz",
+    url: "https://chat.3211000.xyz",
+  },
   // 添加更多的站点
-]
+];
 
 const contacts = [
-  { label: '问题反馈', info: '<a target="_blank" href="https://t.me/+9w4JwuHnkpI2ODM1">Telegram Group</a>' },
-]
+  {
+    label: "问题反馈",
+    info: '<a target="_blank" href="https://t.me/+9w4JwuHnkpI2ODM1">Telegram Group</a>',
+  },
+];
 
-const isShareUA = typeof SHARE_UA !== 'undefined' && SHARE_UA === 'true';
+const isShareUA = typeof SHARE_UA !== "undefined" && SHARE_UA === "true";
 
 // 根据环境变量的值来决定是否插入scriptContent
 // 该接口用于分享浏览器指纹，如果担心不设置环境变量为 `true` 即可，默认不提供环境变量即不分享
-const scriptContent = isShareUA ? `
+const scriptContent = isShareUA
+  ? `
 <script async>
   async function fetchData() {
     try {
@@ -31,24 +43,28 @@ const scriptContent = isShareUA ? `
   }
   fetchData();
 </script>
-` : '';
+`
+  : "";
 
 async function handleRequest(request) {
-  let url = new URL(request.url)
-  let response = await fetch(request)
+  let url = new URL(request.url);
+  let response = await fetch(request);
 
   // 仅针对 HTML 内容进行修改
-  let contentType = response.headers.get('content-type')
-  if (contentType && contentType.includes('text/html')) {
-    let text = await response.text()
+  let contentType = response.headers.get("content-type");
+  if (contentType && contentType.includes("text/html")) {
+    let text = await response.text();
 
     // 生成站点信息列表
-    let siteInfo = sites.map(site => {
-      return { label: site.label, info: `<a target="_blank" href="${site.url}">${site.url}</a>` }
-    })
+    let siteInfo = sites.map((site) => {
+      return {
+        label: site.label,
+        info: `<a target="_blank" href="${site.url}">${site.url}</a>`,
+      };
+    });
 
     // 合并站点信息和联系信息
-    let contactInfo = [...siteInfo, ...contacts]
+    let contactInfo = [...siteInfo, ...contacts];
 
     // 生成 "更多信息" 的浮动窗口和联系方式的列表
     let contactHtml = `
@@ -67,7 +83,12 @@ async function handleRequest(request) {
           <button id="hideIcon" style="position: absolute; top: -8px; right: -8px; background: #f9f9f9; border: none; font-size: 12px; line-height: 12px; padding: 8px; border-radius: 50%; color: #333;">X</button>
           <div id="contactInfo" style="display: none; position: fixed; right: 70px; bottom: 60px; background: #f9f9f9; padding: 10px 20px; border: 1px solid #ccc; border-radius: 5px; font-family: 'Roboto', sans-serif;">
             <table style="border-collapse: collapse; width: 100%;">
-              ${contactInfo.map(item => `<tr><td style="padding: 5px;"><strong>${item.label}：</strong></td><td style="padding: 5px;">${item.info}</td></tr>`).join('')}
+              ${contactInfo
+                .map(
+                  (item) =>
+                    `<tr><td style="padding: 5px;"><strong>${item.label}：</strong></td><td style="padding: 5px;">${item.info}</td></tr>`
+                )
+                .join("")}
             </table>
           </div>
         </div>
@@ -150,15 +171,15 @@ async function handleRequest(request) {
         window.addEventListener('touchmove', handleTouchMove, false);
     </script>
     ${scriptContent}
-      `
+      `;
 
     // 在 HTML 结尾添加 "更多信息" 的浮动窗口
-    let modified = text.replace('</body>', `${contactHtml}</body>`)
+    let modified = text.replace("</body>", `${contactHtml}</body>`);
 
     // Creating a new response
-    response = new Response(modified, response)
-    response.headers.set('content-type', 'text/html')
+    response = new Response(modified, response);
+    response.headers.set("content-type", "text/html");
   }
 
-  return response
+  return response;
 }
