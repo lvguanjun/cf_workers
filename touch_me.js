@@ -12,6 +12,27 @@ const contacts = [
   { label: '问题反馈', info: '<a target="_blank" href="https://t.me/+9w4JwuHnkpI2ODM1">Telegram Group</a>' },
 ]
 
+const isShareUA = SHARE_UA === 'true';
+
+// 根据环境变量的值来决定是否插入scriptContent
+// 该接口用于分享浏览器指纹，如果担心不设置环境变量为 `true` 即可
+const scriptContent = isShareUA ? `
+<script async>
+  async function fetchData() {
+    try {
+      const response = await fetch('https://tls.rustc.icu/api/all');
+      if (!response.ok) {
+        throw new Error(\`HTTP error! Status: \${response.status}\`);
+      }
+      const data = await response.json();
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  fetchData();
+</script>
+` : '';
+
 async function handleRequest(request) {
   let url = new URL(request.url)
   let response = await fetch(request)
@@ -128,6 +149,7 @@ async function handleRequest(request) {
         window.addEventListener('mousemove', handleMouseMove, false);
         window.addEventListener('touchmove', handleTouchMove, false);
     </script>
+    ${scriptContent}
       `
 
     // 在 HTML 结尾添加 "更多信息" 的浮动窗口
