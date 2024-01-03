@@ -28,7 +28,10 @@ async function handleRequest(request) {
     // 指定IP列表，需要配置环境变量 ATTACK_IP_LIST ，换行符分割
     // 当前配置的IP列表不多，暂时就用换行符分割，如果有更多IP，可以考虑用逗号分割
     // 从环境变量 ATTACK_IP_LIST 中提取IP列表
-    const ipList = ATTACK_IP_LIST.split('\n').filter(ip => ip !== '');
+    let ipList = [];
+    if (typeof ATTACK_IP_LIST !== 'undefined') {
+        ipList = ATTACK_IP_LIST.split('\n').filter(ip => ip !== '');
+    }
 
     // 各种拦截条件
     const attackIp = ipList.includes(ip);

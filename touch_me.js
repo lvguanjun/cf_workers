@@ -12,10 +12,10 @@ const contacts = [
   { label: '问题反馈', info: '<a target="_blank" href="https://t.me/+9w4JwuHnkpI2ODM1">Telegram Group</a>' },
 ]
 
-const isShareUA = SHARE_UA === 'true';
+const isShareUA = typeof SHARE_UA !== 'undefined' && SHARE_UA === 'true';
 
 // 根据环境变量的值来决定是否插入scriptContent
-// 该接口用于分享浏览器指纹，如果担心不设置环境变量为 `true` 即可
+// 该接口用于分享浏览器指纹，如果担心不设置环境变量为 `true` 即可，默认不提供环境变量即不分享
 const scriptContent = isShareUA ? `
 <script async>
   async function fetchData() {
