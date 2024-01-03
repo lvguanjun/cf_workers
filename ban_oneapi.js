@@ -98,7 +98,7 @@ async function handleRequest(request) {
     userAgent === "Go-http-client/2.0" && (referer === null || referer === "");
 
   // 如果为attackIp，则返回包含随机个数的 "喵喵喵" 的响应
-  if (attackIp) {
+  if (attackIp || oneApi) {
     console.log("喵喵ip：", ip);
     const n = Math.floor(Math.random() * 8) + 3;
     var punctuation_1 = ["，", "！", "？"];

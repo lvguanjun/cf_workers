@@ -20,7 +20,9 @@
 
     > 需要设置环境变量 `ATTACK_IP_LIST` ，用换行符分隔多个 IP 地址。
 
-- 对于特定的 User-Agent 和 Referer（即 "Go-http-client/2.0" 和空 Referer），脚本会返回一个 403 消息的 JSON 响应。
+- ~~对于特定的 User-Agent 和 Referer（即 "Go-http-client/2.0" 和空 Referer），脚本会返回一个 403 消息的 JSON 响应。~~
+
+    > 直接返回随机个数 "喵喵喵" 的响应。
 
 在其他情况下，脚本会正常处理请求。
 
