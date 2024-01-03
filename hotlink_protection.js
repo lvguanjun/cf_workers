@@ -91,6 +91,11 @@ function generateOkResponse(body) {
 }
 
 const handleRequest = async (request) => {
+  // 如果请求方法不是POST，放行正常请求
+  if (request.method !== "POST") {
+    return fetch(request);
+  }
+
   const ip = request.headers.get("cf-connecting-ip");
   let blockedIPs = [];
   if (typeof IP_LIST !== "undefined") {
@@ -111,8 +116,7 @@ const handleRequest = async (request) => {
   const url = new URL(request.url);
   const referer = request.headers.get("Referer") || "";
   const expectedReferer = `https://${url.host}/`;
-  const isInvalidReferer =
-    request.method === "POST" && referer !== expectedReferer;
+  const isInvalidReferer = referer !== expectedReferer;
 
   if (isInvalidReferer) {
     console.log("Invalid referer ip: " + ip);
